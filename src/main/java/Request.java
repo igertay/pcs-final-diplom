@@ -10,18 +10,13 @@ public class Request {
     public static void main(String[] args) {
 
         try (Socket socket = new Socket(Main.HOST, Main.PORT);
-             PrintWriter in = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader out = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-            System.out.println(out.readLine());
-            in.println(new Scanner(System.in)
+             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+            System.out.println(reader.readLine());
+            writer.println(new Scanner(System.in)
                     .nextLine());
-            StringBuilder stringBuilder = new StringBuilder();
             String result;
-
-            while ((result = out.readLine()) != null) {
-
-                stringBuilder.append(result);
+            while ((result = reader.readLine()) != null) {
                 System.out.println(result);
             }
 
@@ -31,5 +26,3 @@ public class Request {
         }
     }
 }
-
-

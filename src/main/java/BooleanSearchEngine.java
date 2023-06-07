@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfReader;
@@ -36,10 +38,11 @@ public class BooleanSearchEngine implements SearchEngine {
                         List<PageEntry> pageEntryList = new ArrayList<>(searchResult.get(word));
                         pageEntryList.add(pageEntry);
                         searchResult.put(word, pageEntryList);
+                        Collections.sort(pageEntryList);
+
                     } else {
                         searchResult.put(word, Arrays.asList(pageEntry));
                     }
-
                 }
             }
 
@@ -50,10 +53,22 @@ public class BooleanSearchEngine implements SearchEngine {
     public List<PageEntry> search(String word) {
         if (searchResult.containsKey(word)) {
             List<PageEntry> pageEntryList = searchResult.get(word);
-            Collections.sort(pageEntryList);
             return pageEntryList;
         } else {
             return Collections.emptyList();
         }
+    }
+
+    static String answerJson(List<PageEntry> pageEntryList) {
+        var builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        List<String> jsonList = new ArrayList<>();
+        if (pageEntryList.isEmpty()) {
+            return "Слово не найдено.";
+        }
+        for (PageEntry pageEntry : pageEntryList) {
+            jsonList.add(gson.toJson(pageEntry));
+        }
+        return jsonList.toString();
     }
 }
